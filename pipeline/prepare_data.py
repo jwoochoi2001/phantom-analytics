@@ -265,7 +265,9 @@ def encode_features(df: pd.DataFrame, meta: CampaignMeta) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 # 진입점
 # ---------------------------------------------------------------------------
-def prepare_data(campaign_id: int, pre_days: int) -> tuple[pd.DataFrame, CampaignMeta]:
+def prepare_data(campaign_id: int, pre_days: int, output_dir: Path | None = None) -> tuple[pd.DataFrame, CampaignMeta]:
+    """output_dir: 결과 저장 위치(기본값 outputs/). 테스트 등에서 실제 캐시를 건드리지
+    않으려면 임시 디렉터리를 넘긴다."""
     desc = pd.read_csv(RAW / "campaign_desc.csv")
     table = pd.read_csv(RAW / "campaign_table.csv")
     coupon = pd.read_csv(RAW / "coupon.csv")
@@ -290,7 +292,7 @@ def prepare_data(campaign_id: int, pre_days: int) -> tuple[pd.DataFrame, Campaig
     df = handle_missing(df, meta)
     df = encode_features(df, meta)
 
-    out_dir = OUTPUTS / f"campaign_{campaign_id}"
+    out_dir = (output_dir or OUTPUTS) / f"campaign_{campaign_id}"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "analysis_data.csv"
     df.to_csv(out_path, index=False, encoding="utf-8-sig")

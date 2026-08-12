@@ -221,9 +221,12 @@ def estimate_outcomes(df: pd.DataFrame, pairs: list[tuple]) -> dict:
 # ---------------------------------------------------------------------------
 # 진입점
 # ---------------------------------------------------------------------------
-def estimate_effect(df: pd.DataFrame, meta: CampaignMeta) -> dict:
+def estimate_effect(df: pd.DataFrame, meta: CampaignMeta, output_dir: Path | None = None) -> dict:
+    """output_dir: 결과 저장 위치(기본값 outputs/). 테스트 등에서 실제 캐시를 건드리지
+    않으려면 임시 디렉터리를 넘긴다."""
+    output_dir = output_dir or OUTPUTS
     base_ctx = dict(
-        campaign_id=meta.campaign_id, pre_days=meta.pre_days,
+        campaign_id=meta.campaign_id, description=meta.description, pre_days=meta.pre_days,
         start_day=meta.start_day, end_day=meta.end_day, overlap_ids=meta.overlap_ids,
         n_treatment=meta.n_treatment, n_control=meta.n_control,
     )
@@ -235,7 +238,7 @@ def estimate_effect(df: pd.DataFrame, meta: CampaignMeta) -> dict:
     # analysis_data.csv를 p_score/logit_p/in_support가 포함된 상태로 갱신 저장한다.
     # 게이트에 걸려 이후 단계를 진행하지 못하더라도, 성향점수 분포·공통영역 진단은
     # 화면(app)에서 항상 조회할 수 있어야 하기 때문이다.
-    out_dir = OUTPUTS / f"campaign_{meta.campaign_id}"
+    out_dir = output_dir / f"campaign_{meta.campaign_id}"
     out_dir.mkdir(parents=True, exist_ok=True)
     df.to_csv(out_dir / "analysis_data.csv", index=False, encoding="utf-8-sig")
     _log("저장", f"analysis_data.csv (p_score 포함) → {out_dir / 'analysis_data.csv'}")
@@ -262,7 +265,7 @@ def estimate_effect(df: pd.DataFrame, meta: CampaignMeta) -> dict:
 
     outcomes = estimate_outcomes(df, pairs)
 
-    out_dir = OUTPUTS / f"campaign_{meta.campaign_id}"
+    out_dir = output_dir / f"campaign_{meta.campaign_id}"
     out_dir.mkdir(parents=True, exist_ok=True)
     matched_ids = [p[0] for p in pairs] + [p[1] for p in pairs]
     matched_df = df.loc[df["household_key"].isin(matched_ids)].copy()
@@ -282,7 +285,7 @@ def estimate_effect(df: pd.DataFrame, meta: CampaignMeta) -> dict:
     )
     return result(
         status, reason,
-        campaign_id=meta.campaign_id, pre_days=meta.pre_days,
+        campaign_id=meta.campaign_id, description=meta.description, pre_days=meta.pre_days,
         start_day=meta.start_day, end_day=meta.end_day, overlap_ids=meta.overlap_ids,
         n_treatment=meta.n_treatment, n_control=meta.n_control,
         common_support=[round(lo, 4), round(hi, 4)],

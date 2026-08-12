@@ -2,6 +2,7 @@
   "status": "ok",
   "reason": "",
   "campaign_id": 30,
+  "description": "TypeA",
   "pre_days": 90,
   "start_day": 323,
   "end_day": 369,

@@ -46,6 +46,13 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUTPUTS = ROOT / "outputs"
 
+# data/raw/는 라이선스가 있는 Kaggle 데이터셋이라 저장소에 커밋하지 않는다(용량도
+# transaction_data.csv 141MB로 GitHub 100MB 제한을 넘음). 클라우드 배포 환경처럼
+# data/raw/가 없는 곳에서는 outputs/campaign_*/results.json에 이미 저장된 캐시
+# 결과만 조회하는 모드로 우아하게 전환한다 — 원본이 없다고 앱이 죽지 않게 한다.
+RAW_DATA_AVAILABLE = (RAW / "campaign_desc.csv").exists()
+CACHE_ONLY_PRE_DAYS = 90  # 캐시 전용 모드에서 30개 캠페인 전체가 이 값으로 미리 계산되어 있음
+
 sys.path.insert(0, str(ROOT / "pipeline"))
 from run_pipeline import run as run_pipeline, MIN_GROUP_SIZE  # noqa: E402
 
@@ -68,16 +75,42 @@ STATUS_LABELS = {
     "insufficient_sample": ("⛔ 중단: 표본 부족", "error"),
     "insufficient_overlap": ("⛔ 중단: 공통지지영역 부족", "error"),
     "residual_imbalance": ("⚠️ 경고: 매칭 후 잔여 불균형", "warning"),
+    "no_raw_data": ("☁️ 캐시에 없는 조건", "warning"),
 }
 
 
 @st.cache_data(show_spinner=False)
 def load_campaign_list() -> pd.DataFrame:
-    return pd.read_csv(RAW / "campaign_desc.csv").sort_values("CAMPAIGN")
+    if RAW_DATA_AVAILABLE:
+        return pd.read_csv(RAW / "campaign_desc.csv").sort_values("CAMPAIGN")
+    return _load_campaign_list_from_cache()
+
+
+def _load_campaign_list_from_cache() -> pd.DataFrame:
+    """원본 데이터가 없을 때: outputs/campaign_*/results.json을 스캔해 선택지를 만든다."""
+    rows = []
+    for results_path in sorted(OUTPUTS.glob("campaign_*/results.json")):
+        try:
+            r = json.loads(results_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if "start_day" not in r or "end_day" not in r:
+            continue
+        rows.append(
+            {"CAMPAIGN": r["campaign_id"], "DESCRIPTION": r.get("description", ""),
+             "START_DAY": r["start_day"], "END_DAY": r["end_day"]}
+        )
+    if not rows:
+        return pd.DataFrame(columns=["CAMPAIGN", "DESCRIPTION", "START_DAY", "END_DAY"])
+    return pd.DataFrame(rows).sort_values("CAMPAIGN")
 
 
 def get_or_run(campaign_id: int, pre_days: int, force: bool = False) -> tuple[dict, bool]:
-    """캐시 재사용: outputs/campaign_{id}/results.json이 같은 조건이면 그대로 쓴다."""
+    """캐시 재사용: outputs/campaign_{id}/results.json이 같은 조건이면 그대로 쓴다.
+
+    원본 데이터(data/raw/)가 없는 환경(예: 클라우드 배포)에서 캐시에 없는 조건을
+    요청하면, 계산을 시도하다 크래시하는 대신 안내 메시지가 담긴 status를 반환한다.
+    """
     out_dir = OUTPUTS / f"campaign_{campaign_id}"
     results_path = out_dir / "results.json"
 
@@ -88,6 +121,17 @@ def get_or_run(campaign_id: int, pre_days: int, force: bool = False) -> tuple[di
             cached = None
         if cached and cached.get("campaign_id") == campaign_id and cached.get("pre_days") == pre_days:
             return cached, True
+
+    if not RAW_DATA_AVAILABLE:
+        return {
+            "status": "no_raw_data",
+            "reason": (
+                "이 배포판에는 원본 데이터(data/raw/)가 없어 사전 계산된 결과만 조회할 수 있습니다. "
+                f"campaign_id={campaign_id}, pre_days={pre_days} 조합은 캐시에 없습니다. "
+                f"pre_days={CACHE_ONLY_PRE_DAYS}으로 다시 선택해 보세요."
+            ),
+            "campaign_id": campaign_id, "pre_days": pre_days,
+        }, False
 
     res = run_pipeline(campaign_id, pre_days)
     return res, False
@@ -165,7 +209,19 @@ def main():
     st.title("쿠폰 캠페인 효과 분석")
     st.caption("성향점수 매칭 기반 캠페인별 처치효과 추정 — outputs/campaign_{id}/ 결과를 캐시로 재사용합니다.")
 
+    if not RAW_DATA_AVAILABLE:
+        st.info(
+            "☁️ 이 배포판에는 원본 데이터(data/raw/, 라이선스·용량 문제로 저장소에 포함하지 않음)가 "
+            f"없어 사전 계산된 결과만 조회합니다. 발행 전 관찰 기간은 캐시된 값(pre_days="
+            f"{CACHE_ONLY_PRE_DAYS})으로 고정됩니다. 전체 기능은 저장소를 내려받아 "
+            "`data/raw/`를 채운 뒤 로컬에서 실행하세요."
+        )
+
     desc = load_campaign_list()
+    if desc.empty:
+        st.error("조회 가능한 캠페인이 없습니다 (outputs/campaign_*/results.json 캐시가 비어 있음).")
+        return
+
     options = [
         f"{int(r.CAMPAIGN)} - {r.DESCRIPTION} (DAY {int(r.START_DAY)}~{int(r.END_DAY)})"
         for _, r in desc.iterrows()
@@ -179,9 +235,12 @@ def main():
         ) if any(o.startswith("18 -") for o in options) else 0)
         campaign_id = id_by_option[selected_option]
     with col2:
-        pre_days = st.number_input("발행 전 관찰 기간(pre_days, 일)", min_value=1, max_value=600, value=90, step=10)
+        pre_days = st.number_input(
+            "발행 전 관찰 기간(pre_days, 일)", min_value=1, max_value=600,
+            value=CACHE_ONLY_PRE_DAYS, step=10, disabled=not RAW_DATA_AVAILABLE,
+        )
     with col3:
-        force = st.checkbox("캐시 무시하고 재실행", value=False)
+        force = st.checkbox("캐시 무시하고 재실행", value=False, disabled=not RAW_DATA_AVAILABLE)
 
     run_clicked = st.button("분석 실행", type="primary")
 
@@ -202,6 +261,10 @@ def main():
         from_cache = st.session_state.get("last_from_cache", True)
     else:
         st.info("캠페인과 발행 전 관찰 기간을 선택하고 '분석 실행'을 누르세요.")
+        return
+
+    if res["status"] == "no_raw_data":
+        st.warning(res["reason"])
         return
 
     if from_cache:

@@ -2,6 +2,7 @@
   "status": "insufficient_sample",
   "reason": "집단 구성 단계 표본 부족: 처치 15명, 대조 346명 (기준 각 30명 이상)",
   "campaign_id": 20,
+  "description": "TypeC",
   "pre_days": 90,
   "start_day": 615,
   "end_day": 685,

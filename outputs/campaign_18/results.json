@@ -2,7 +2,8 @@
   "status": "ok",
   "reason": "",
   "campaign_id": 18,
-  "pre_days": 586,
+  "description": "TypeA",
+  "pre_days": 90,
   "start_day": 587,
   "end_day": 642,
   "overlap_ids": [
@@ -18,77 +19,77 @@
   "n_treatment": 510,
   "n_control": 335,
   "common_support": [
-    0.1194,
-    0.981
+    0.2036,
+    0.9206
   ],
-  "n_common_support_treatment": 507,
-  "n_common_support_control": 313,
+  "n_common_support_treatment": 506,
+  "n_common_support_control": 325,
   "caliper_multiplier": 0.2,
-  "caliper_logit": 0.2294,
-  "n_matched_pairs": 232,
-  "match_rate": 0.4549,
+  "caliper_logit": 0.1673,
+  "n_matched_pairs": 262,
+  "match_rate": 0.5137,
   "balance_smd_before": [
     {
       "변수": "pre_recency_capped",
-      "SMD": -0.333
+      "SMD": -0.371
     },
     {
       "변수": "log_pre_baskets",
-      "SMD": 0.814
+      "SMD": 0.688
     },
     {
       "변수": "log_pre_sales",
-      "SMD": 0.715
+      "SMD": 0.519
     },
     {
       "변수": "pre_target_share",
-      "SMD": -0.152
+      "SMD": -0.075
     },
     {
       "변수": "pre_coupon_user",
-      "SMD": 0.214
+      "SMD": 0.233
     },
     {
       "변수": "pre_campaign_count_c",
-      "SMD": 0.251
+      "SMD": 0.253
     },
     {
       "변수": "has_demographic",
-      "SMD": 0.522
+      "SMD": 0.541
     }
   ],
-  "max_abs_smd_before": 0.814,
+  "max_abs_smd_before": 0.688,
   "balance_smd_after": [
     {
       "변수": "pre_recency_capped",
-      "SMD": 0.034
+      "SMD": 0.007
     },
     {
       "변수": "log_pre_baskets",
-      "SMD": 0.02
+      "SMD": 0.03
     },
     {
       "변수": "log_pre_sales",
-      "SMD": -0.023
+      "SMD": -0.014
     },
     {
       "변수": "pre_target_share",
-      "SMD": -0.043
+      "SMD": 0.038
     },
     {
       "변수": "pre_coupon_user",
-      "SMD": -0.059
+      "SMD": 0.0
     },
     {
       "변수": "pre_campaign_count_c",
-      "SMD": -0.08
+      "SMD": -0.047
     },
     {
       "변수": "has_demographic",
-      "SMD": -0.019
+      "SMD": -0.009
     }
   ],
-  "max_abs_smd": 0.08,
+  "max_abs_smd": 0.047,
   "outcomes": {
     "primary": {
       "target_purchase": {
@@ -100,11 +101,11 @@
           "ci_hi": 0.1141
         },
         "matched": {
-          "mean_t": 0.9181,
-          "mean_c": 0.9095,
-          "diff": 0.0086,
-          "ci_lo": -0.0422,
-          "ci_hi": 0.0594
+          "mean_t": 0.9046,
+          "mean_c": 0.9046,
+          "diff": 0.0,
+          "ci_lo": -0.0486,
+          "ci_hi": 0.0486
         }
       },
       "target_sales": {
@@ -116,11 +117,11 @@
           "ci_hi": 63.1048
         },
         "matched": {
-          "mean_t": 110.4743,
-          "mean_c": 110.4638,
-          "diff": 0.0105,
-          "ci_lo": -19.6662,
-          "ci_hi": 19.6872
+          "mean_t": 114.9712,
+          "mean_c": 101.2992,
+          "diff": 13.6719,
+          "ci_lo": -4.5126,
+          "ci_hi": 31.8565
         }
       },
       "target_quantity": {
@@ -132,11 +133,11 @@
           "ci_hi": 25.4962
         },
         "matched": {
-          "mean_t": 43.3707,
-          "mean_c": 44.2759,
-          "diff": -0.9052,
-          "ci_lo": -7.9474,
-          "ci_hi": 6.1371
+          "mean_t": 45.7557,
+          "mean_c": 40.4122,
+          "diff": 5.3435,
+          "ci_lo": -1.4025,
+          "ci_hi": 12.0895
         }
       }
     },
@@ -150,11 +151,11 @@
           "ci_hi": 0.0798
         },
         "matched": {
-          "mean_t": 0.9353,
-          "mean_c": 0.944,
-          "diff": -0.0086,
-          "ci_lo": -0.0501,
-          "ci_hi": 0.0328
+          "mean_t": 0.9237,
+          "mean_c": 0.9351,
+          "diff": -0.0115,
+          "ci_lo": -0.0532,
+          "ci_hi": 0.0303
         }
       },
       "total_sales": {
@@ -166,11 +167,11 @@
           "ci_hi": 139.1573
         },
         "matched": {
-          "mean_t": 232.0957,
-          "mean_c": 230.6245,
-          "diff": 1.4712,
-          "ci_lo": -37.2097,
-          "ci_hi": 40.152
+          "mean_t": 242.6222,
+          "mean_c": 211.4727,
+          "diff": 31.1495,
+          "ci_lo": -6.0738,
+          "ci_hi": 68.3728
         }
       },
       "baskets": {
@@ -182,11 +183,11 @@
           "ci_hi": 5.1583
         },
         "matched": {
-          "mean_t": 8.4397,
-          "mean_c": 8.6983,
-          "diff": -0.2586,
-          "ci_lo": -1.3827,
-          "ci_hi": 0.8654
+          "mean_t": 8.5038,
+          "mean_c": 8.1412,
+          "diff": 0.3626,
+          "ci_lo": -0.7139,
+          "ci_hi": 1.4391
         }
       }
     }
