@@ -1,4 +1,6 @@
-# 쿠폰 캠페인 효과와 수익성 분석
+# 쿠폰 캠페인 효과와 수익성 분석 (Phantom Analytics)
+
+저장소: https://github.com/jwoochoi2001/phantom-analytics
 
 이 폴더는 Kaggle의 dunnhumby The Complete Journey 데이터를 이용해 캠페인별 비교집단을 구성하고, 성향점수 매칭으로 캠페인 효과를 추정한 뒤 쿠폰 후보안의 수익성을 비교하는 프로젝트 작업 공간이다.
 
