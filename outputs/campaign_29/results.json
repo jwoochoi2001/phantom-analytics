@@ -1,0 +1,189 @@
+{
+  "status": "residual_imbalance",
+  "reason": "매칭 후 최대 |SMD|=0.155가 기준(0.1) 초과 — 효과 추정치는 참고용으로만 사용하고 확정하지 않음",
+  "campaign_id": 29,
+  "pre_days": 90,
+  "start_day": 281,
+  "end_day": 334,
+  "overlap_ids": [
+    27,
+    28,
+    30
+  ],
+  "n_treatment": 79,
+  "n_control": 1141,
+  "common_support": [
+    0.0167,
+    0.2567
+  ],
+  "n_common_support_treatment": 79,
+  "n_common_support_control": 1067,
+  "caliper_multiplier": 0.2,
+  "caliper_logit": 0.0902,
+  "n_matched_pairs": 78,
+  "match_rate": 0.9873,
+  "balance_smd_before": [
+    {
+      "변수": "pre_recency_capped",
+      "SMD": -0.073
+    },
+    {
+      "변수": "log_pre_baskets",
+      "SMD": 0.075
+    },
+    {
+      "변수": "log_pre_sales",
+      "SMD": 0.176
+    },
+    {
+      "변수": "pre_target_share",
+      "SMD": 0.541
+    },
+    {
+      "변수": "pre_coupon_user",
+      "SMD": 0.0
+    },
+    {
+      "변수": "pre_campaign_count_c",
+      "SMD": -0.115
+    },
+    {
+      "변수": "has_demographic",
+      "SMD": 0.094
+    }
+  ],
+  "max_abs_smd_before": 0.541,
+  "balance_smd_after": [
+    {
+      "변수": "pre_recency_capped",
+      "SMD": 0.155
+    },
+    {
+      "변수": "log_pre_baskets",
+      "SMD": -0.153
+    },
+    {
+      "변수": "log_pre_sales",
+      "SMD": -0.128
+    },
+    {
+      "변수": "pre_target_share",
+      "SMD": -0.003
+    },
+    {
+      "변수": "pre_coupon_user",
+      "SMD": 0.0
+    },
+    {
+      "변수": "pre_campaign_count_c",
+      "SMD": -0.133
+    },
+    {
+      "변수": "has_demographic",
+      "SMD": -0.077
+    }
+  ],
+  "max_abs_smd": 0.155,
+  "outcomes": {
+    "primary": {
+      "target_purchase": {
+        "raw": {
+          "mean_t": 0.7089,
+          "mean_c": 0.4514,
+          "diff": 0.2575,
+          "ci_lo": 0.1526,
+          "ci_hi": 0.3624
+        },
+        "matched": {
+          "mean_t": 0.7051,
+          "mean_c": 0.641,
+          "diff": 0.0641,
+          "ci_lo": -0.0713,
+          "ci_hi": 0.1995
+        }
+      },
+      "target_sales": {
+        "raw": {
+          "mean_t": 9.912,
+          "mean_c": 4.5652,
+          "diff": 5.3468,
+          "ci_lo": 2.7303,
+          "ci_hi": 7.9633
+        },
+        "matched": {
+          "mean_t": 9.6699,
+          "mean_c": 9.1796,
+          "diff": 0.4903,
+          "ci_lo": -2.6876,
+          "ci_hi": 3.6681
+        }
+      },
+      "target_quantity": {
+        "raw": {
+          "mean_t": 5.3671,
+          "mean_c": 2.3471,
+          "diff": 3.02,
+          "ci_lo": 1.3638,
+          "ci_hi": 4.6762
+        },
+        "matched": {
+          "mean_t": 5.3205,
+          "mean_c": 4.2564,
+          "diff": 1.0641,
+          "ci_lo": -1.0921,
+          "ci_hi": 3.2203
+        }
+      }
+    },
+    "secondary": {
+      "any_purchase": {
+        "raw": {
+          "mean_t": 0.9873,
+          "mean_c": 0.9649,
+          "diff": 0.0224,
+          "ci_lo": -0.0046,
+          "ci_hi": 0.0494
+        },
+        "matched": {
+          "mean_t": 0.9872,
+          "mean_c": 0.9872,
+          "diff": 0.0,
+          "ci_lo": -0.0358,
+          "ci_hi": 0.0358
+        }
+      },
+      "total_sales": {
+        "raw": {
+          "mean_t": 416.561,
+          "mean_c": 372.1881,
+          "diff": 44.3729,
+          "ci_lo": -40.79,
+          "ci_hi": 129.5359
+        },
+        "matched": {
+          "mean_t": 418.0379,
+          "mean_c": 441.4341,
+          "diff": -23.3962,
+          "ci_lo": -127.9017,
+          "ci_hi": 81.1094
+        }
+      },
+      "baskets": {
+        "raw": {
+          "mean_t": 13.519,
+          "mean_c": 12.6082,
+          "diff": 0.9107,
+          "ci_lo": -2.7693,
+          "ci_hi": 4.5907
+        },
+        "matched": {
+          "mean_t": 13.6154,
+          "mean_c": 13.3718,
+          "diff": 0.2436,
+          "ci_lo": -4.0456,
+          "ci_hi": 4.5328
+        }
+      }
+    }
+  }
+}

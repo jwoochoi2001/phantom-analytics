@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>캠페인 18 분석 보고서</title>
+<style>
+  body { font-family: "Malgun Gothic", "Segoe UI", sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.5; }
+  h1 { font-size: 1.5em; border-bottom: 3px solid #333; padding-bottom: 8px; }
+  h2 { font-size: 1.2em; margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: right; }
+  th { background: #f5f5f5; text-align: center; }
+  td:first-child, th:first-child { text-align: left; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: bold; color: white; }
+  .badge-ok { background: #2e8b57; }
+  .badge-warn { background: #d4890a; }
+  .badge-error { background: #c0392b; }
+  .meta { color: #555; font-size: 0.9em; }
+  .caveat { background: #fff8e1; border-left: 4px solid #d4890a; padding: 10px 14px; margin: 16px 0; font-size: 0.92em; }
+  .footer { margin-top: 3em; color: #888; font-size: 0.85em; border-top: 1px solid #ddd; padding-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>캠페인 18 분석 보고서</h1>
+<p class="meta">
+  기간: DAY 587~642 |
+  발행 전 관찰 기간(pre_days): 90일 |
+  겹치는 캠페인: [14, 15, 16, 17, 19, 20, 21, 22]
+</p>
+
+<p>
+  
+    <span class="badge badge-ok">품질 기준 통과</span>
+  
+  
+</p>
+
+<h2>1. 집단 구성</h2>
+<table>
+  <tr><th>구분</th><th>가구 수</th></tr>
+  <tr><td>처치</td><td>510</td></tr>
+  <tr><td>대조</td><td>335</td></tr>
+</table>
+
+
+<h2>2. 성향점수 · 공통지지영역</h2>
+<table>
+  <tr><th>항목</th><th>값</th></tr>
+  <tr><td>공통지지영역</td><td>[0.2036, 0.9206]</td></tr>
+  <tr><td>영역 내 처치</td><td>506</td></tr>
+  <tr><td>영역 내 대조</td><td>325</td></tr>
+</table>
+
+
+
+<h2>3. 매칭 결과</h2>
+<table>
+  <tr><th>항목</th><th>값</th></tr>
+  <tr><td>caliper</td><td>0.2 x SD = 0.1673</td></tr>
+  <tr><td>매칭 쌍 수</td><td>262</td></tr>
+  <tr><td>처치 매칭률</td><td>51.4%</td></tr>
+</table>
+
+
+
+<h2>4. 매칭 전후 균형 (SMD)</h2>
+<table>
+  <tr><th>변수</th><th>매칭 전 SMD</th><th>매칭 후 SMD</th></tr>
+  
+  
+  <tr>
+    <td>pre_recency_capped</td>
+    <td>-0.371</td>
+    <td>0.007</td>
+  </tr>
+  
+  
+  <tr>
+    <td>log_pre_baskets</td>
+    <td>0.688</td>
+    <td>0.03</td>
+  </tr>
+  
+  
+  <tr>
+    <td>log_pre_sales</td>
+    <td>0.519</td>
+    <td>-0.014</td>
+  </tr>
+  
+  
+  <tr>
+    <td>pre_target_share</td>
+    <td>-0.075</td>
+    <td>0.038</td>
+  </tr>
+  
+  
+  <tr>
+    <td>pre_coupon_user</td>
+    <td>0.233</td>
+    <td>0.0</td>
+  </tr>
+  
+  
+  <tr>
+    <td>pre_campaign_count_c</td>
+    <td>0.253</td>
+    <td>-0.047</td>
+  </tr>
+  
+  
+  <tr>
+    <td>has_demographic</td>
+    <td>0.541</td>
+    <td>-0.009</td>
+  </tr>
+  
+</table>
+<p class="meta">매칭 전 최대|SMD|=0.688 → 매칭 후 최대|SMD|=0.047 (기준 0.1)</p>
+
+
+
+<h2>5. 캠페인 효과 (95% CI)</h2>
+<h3>주요 결과 (캠페인 대상 상품)</h3>
+<table>
+  <tr><th>변수</th><th>보정전 차이</th><th>보정전 95%CI</th><th>매칭후 차이</th><th>매칭후 95%CI</th></tr>
+  
+  
+  <tr>
+    <td>target_purchase (구매율)</td>
+    <td>0.072</td>
+    <td>[0.031, 0.114]</td>
+    <td>0.000</td>
+    <td>[-0.049, 0.049]</td>
+  </tr>
+  
+  
+  <tr>
+    <td>target_sales (구매금액)</td>
+    <td>47.501</td>
+    <td>[31.897, 63.105]</td>
+    <td>13.672</td>
+    <td>[-4.513, 31.857]</td>
+  </tr>
+  
+  
+  <tr>
+    <td>target_quantity (구매수량)</td>
+    <td>19.512</td>
+    <td>[13.528, 25.496]</td>
+    <td>5.343</td>
+    <td>[-1.403, 12.089]</td>
+  </tr>
+  
+</table>
+<h3>보조 결과 (전체 상품)</h3>
+<table>
+  <tr><th>변수</th><th>보정전 차이</th><th>보정전 95%CI</th><th>매칭후 차이</th><th>매칭후 95%CI</th></tr>
+  
+  
+  <tr>
+    <td>any_purchase (구매율)</td>
+    <td>0.043</td>
+    <td>[0.007, 0.080]</td>
+    <td>-0.011</td>
+    <td>[-0.053, 0.030]</td>
+  </tr>
+  
+  
+  <tr>
+    <td>total_sales (구매금액)</td>
+    <td>106.912</td>
+    <td>[74.666, 139.157]</td>
+    <td>31.149</td>
+    <td>[-6.074, 68.373]</td>
+  </tr>
+  
+  
+  <tr>
+    <td>baskets (장바구니 수)</td>
+    <td>3.972</td>
+    <td>[2.786, 5.158]</td>
+    <td>0.363</td>
+    <td>[-0.714, 1.439]</td>
+  </tr>
+  
+</table>
+
+
+<div class="caveat">
+  매칭 후 차이는 관찰된 발행 전 특성만 통제한 추정치이며, 관찰되지 않은 교란요인은 통제되지
+  않았으므로 확정된 인과효과로 단정하지 않습니다. 매칭 표본은 원 처치 가구의 일부만 포함하므로
+  전체 처치 가구로 일반화하지 않습니다.
+</div>
+
+<div class="footer">
+  생성: pipeline/generate_report.py | 데이터: Dunnhumby The Complete Journey |
+  분석 조건: campaign_id=18, pre_days=90
+</div>
+
+</body>
+</html>

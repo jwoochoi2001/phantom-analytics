@@ -1,0 +1,7 @@
+﻿pre_days,status,n_matched_pairs,match_rate,max_abs_smd,raw_diff,matched_diff,matched_ci_lo,matched_ci_hi,significant
+30,ok,278,0.5451,0.085,47.5011,20.0818,1.8153,38.3484,True
+60,residual_imbalance,266,0.5216,0.101,,,,,
+90,ok,262,0.5137,0.047,47.5011,13.6719,-4.5126,31.8565,False
+180,ok,210,0.4118,0.067,47.5011,-3.2604,-21.3251,14.8043,False
+365,ok,219,0.4294,0.056,47.5011,-2.6136,-21.772,16.5448,False
+586,ok,232,0.4549,0.08,47.5011,0.0105,-19.6662,19.6872,False

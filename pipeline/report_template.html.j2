@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>캠페인 {{ res.campaign_id }} 분석 보고서</title>
+<style>
+  body { font-family: "Malgun Gothic", "Segoe UI", sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.5; }
+  h1 { font-size: 1.5em; border-bottom: 3px solid #333; padding-bottom: 8px; }
+  h2 { font-size: 1.2em; margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: right; }
+  th { background: #f5f5f5; text-align: center; }
+  td:first-child, th:first-child { text-align: left; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: bold; color: white; }
+  .badge-ok { background: #2e8b57; }
+  .badge-warn { background: #d4890a; }
+  .badge-error { background: #c0392b; }
+  .meta { color: #555; font-size: 0.9em; }
+  .caveat { background: #fff8e1; border-left: 4px solid #d4890a; padding: 10px 14px; margin: 16px 0; font-size: 0.92em; }
+  .footer { margin-top: 3em; color: #888; font-size: 0.85em; border-top: 1px solid #ddd; padding-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>캠페인 {{ res.campaign_id }} 분석 보고서</h1>
+<p class="meta">
+  기간: DAY {{ res.start_day }}~{{ res.end_day }} |
+  발행 전 관찰 기간(pre_days): {{ res.pre_days }}일 |
+  겹치는 캠페인: {{ res.overlap_ids }}
+</p>
+
+<p>
+  {% if res.status == "ok" %}
+    <span class="badge badge-ok">품질 기준 통과</span>
+  {% elif res.status == "residual_imbalance" %}
+    <span class="badge badge-warn">경고: 매칭 후 잔여 불균형</span>
+  {% else %}
+    <span class="badge badge-error">중단: {{ res.status }}</span>
+  {% endif %}
+  {% if res.reason %}<span class="meta"> — {{ res.reason }}</span>{% endif %}
+</p>
+
+<h2>1. 집단 구성</h2>
+<table>
+  <tr><th>구분</th><th>가구 수</th></tr>
+  <tr><td>처치</td><td>{{ res.n_treatment }}</td></tr>
+  <tr><td>대조</td><td>{{ res.n_control }}</td></tr>
+</table>
+
+{% if res.common_support %}
+<h2>2. 성향점수 · 공통지지영역</h2>
+<table>
+  <tr><th>항목</th><th>값</th></tr>
+  <tr><td>공통지지영역</td><td>[{{ "%.4f"|format(res.common_support[0]) }}, {{ "%.4f"|format(res.common_support[1]) }}]</td></tr>
+  <tr><td>영역 내 처치</td><td>{{ res.n_common_support_treatment }}</td></tr>
+  <tr><td>영역 내 대조</td><td>{{ res.n_common_support_control }}</td></tr>
+</table>
+{% endif %}
+
+{% if res.n_matched_pairs is defined %}
+<h2>3. 매칭 결과</h2>
+<table>
+  <tr><th>항목</th><th>값</th></tr>
+  <tr><td>caliper</td><td>{{ res.caliper_multiplier }} x SD = {{ res.caliper_logit }}</td></tr>
+  <tr><td>매칭 쌍 수</td><td>{{ res.n_matched_pairs }}</td></tr>
+  <tr><td>처치 매칭률</td><td>{{ "%.1f"|format(res.match_rate * 100) }}%</td></tr>
+</table>
+{% endif %}
+
+{% if res.balance_smd_before %}
+<h2>4. 매칭 전후 균형 (SMD)</h2>
+<table>
+  <tr><th>변수</th><th>매칭 전 SMD</th><th>매칭 후 SMD</th></tr>
+  {% for row in res.balance_smd_before %}
+  {% set after = (res.balance_smd_after | selectattr("변수", "equalto", row["변수"]) | list | first) if res.balance_smd_after else none %}
+  <tr>
+    <td>{{ row["변수"] }}</td>
+    <td>{{ row["SMD"] }}</td>
+    <td>{{ after["SMD"] if after else "-" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<p class="meta">매칭 전 최대|SMD|={{ res.max_abs_smd_before }} → 매칭 후 최대|SMD|={{ res.max_abs_smd }} (기준 0.1)</p>
+{% endif %}
+
+{% if res.status == "ok" and res.outcomes %}
+<h2>5. 캠페인 효과 (95% CI)</h2>
+<h3>주요 결과 (캠페인 대상 상품)</h3>
+<table>
+  <tr><th>변수</th><th>보정전 차이</th><th>보정전 95%CI</th><th>매칭후 차이</th><th>매칭후 95%CI</th></tr>
+  {% for col, label in [("target_purchase","구매율"), ("target_sales","구매금액"), ("target_quantity","구매수량")] %}
+  {% set o = res.outcomes.primary[col] %}
+  <tr>
+    <td>{{ col }} ({{ label }})</td>
+    <td>{{ "%.3f"|format(o.raw.diff) }}</td>
+    <td>[{{ "%.3f"|format(o.raw.ci_lo) }}, {{ "%.3f"|format(o.raw.ci_hi) }}]</td>
+    <td>{{ "%.3f"|format(o.matched.diff) }}</td>
+    <td>[{{ "%.3f"|format(o.matched.ci_lo) }}, {{ "%.3f"|format(o.matched.ci_hi) }}]</td>
+  </tr>
+  {% endfor %}
+</table>
+<h3>보조 결과 (전체 상품)</h3>
+<table>
+  <tr><th>변수</th><th>보정전 차이</th><th>보정전 95%CI</th><th>매칭후 차이</th><th>매칭후 95%CI</th></tr>
+  {% for col, label in [("any_purchase","구매율"), ("total_sales","구매금액"), ("baskets","장바구니 수")] %}
+  {% set o = res.outcomes.secondary[col] %}
+  <tr>
+    <td>{{ col }} ({{ label }})</td>
+    <td>{{ "%.3f"|format(o.raw.diff) }}</td>
+    <td>[{{ "%.3f"|format(o.raw.ci_lo) }}, {{ "%.3f"|format(o.raw.ci_hi) }}]</td>
+    <td>{{ "%.3f"|format(o.matched.diff) }}</td>
+    <td>[{{ "%.3f"|format(o.matched.ci_lo) }}, {{ "%.3f"|format(o.matched.ci_hi) }}]</td>
+  </tr>
+  {% endfor %}
+</table>
+{% elif res.status != "ok" %}
+<h2>5. 캠페인 효과</h2>
+<p class="caveat">품질 상태가 '{{ res.status }}'로 기준을 통과하지 못해 효과 추정치를 표시하지 않습니다.</p>
+{% endif %}
+
+<div class="caveat">
+  매칭 후 차이는 관찰된 발행 전 특성만 통제한 추정치이며, 관찰되지 않은 교란요인은 통제되지
+  않았으므로 확정된 인과효과로 단정하지 않습니다. 매칭 표본은 원 처치 가구의 일부만 포함하므로
+  전체 처치 가구로 일반화하지 않습니다.
+</div>
+
+<div class="footer">
+  생성: pipeline/generate_report.py | 데이터: Dunnhumby The Complete Journey |
+  분석 조건: campaign_id={{ res.campaign_id }}, pre_days={{ res.pre_days }}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environment
+.venv/
+
+# Raw Kaggle data (large files, licensed dataset — see SOURCE_AND_LICENSE.md, not redistributed via git)
+data/raw/
+*.zip
+
+# Streamlit
+.streamlit/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

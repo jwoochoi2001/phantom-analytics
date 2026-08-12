@@ -1,0 +1,194 @@
+{
+  "status": "ok",
+  "reason": "",
+  "campaign_id": 18,
+  "pre_days": 586,
+  "start_day": 587,
+  "end_day": 642,
+  "overlap_ids": [
+    14,
+    15,
+    16,
+    17,
+    19,
+    20,
+    21,
+    22
+  ],
+  "n_treatment": 510,
+  "n_control": 335,
+  "common_support": [
+    0.1194,
+    0.981
+  ],
+  "n_common_support_treatment": 507,
+  "n_common_support_control": 313,
+  "caliper_multiplier": 0.2,
+  "caliper_logit": 0.2294,
+  "n_matched_pairs": 232,
+  "match_rate": 0.4549,
+  "balance_smd_before": [
+    {
+      "변수": "pre_recency_capped",
+      "SMD": -0.333
+    },
+    {
+      "변수": "log_pre_baskets",
+      "SMD": 0.814
+    },
+    {
+      "변수": "log_pre_sales",
+      "SMD": 0.715
+    },
+    {
+      "변수": "pre_target_share",
+      "SMD": -0.152
+    },
+    {
+      "변수": "pre_coupon_user",
+      "SMD": 0.214
+    },
+    {
+      "변수": "pre_campaign_count_c",
+      "SMD": 0.251
+    },
+    {
+      "변수": "has_demographic",
+      "SMD": 0.522
+    }
+  ],
+  "max_abs_smd_before": 0.814,
+  "balance_smd_after": [
+    {
+      "변수": "pre_recency_capped",
+      "SMD": 0.034
+    },
+    {
+      "변수": "log_pre_baskets",
+      "SMD": 0.02
+    },
+    {
+      "변수": "log_pre_sales",
+      "SMD": -0.023
+    },
+    {
+      "변수": "pre_target_share",
+      "SMD": -0.043
+    },
+    {
+      "변수": "pre_coupon_user",
+      "SMD": -0.059
+    },
+    {
+      "변수": "pre_campaign_count_c",
+      "SMD": -0.08
+    },
+    {
+      "변수": "has_demographic",
+      "SMD": -0.019
+    }
+  ],
+  "max_abs_smd": 0.08,
+  "outcomes": {
+    "primary": {
+      "target_purchase": {
+        "raw": {
+          "mean_t": 0.9412,
+          "mean_c": 0.8687,
+          "diff": 0.0725,
+          "ci_lo": 0.0309,
+          "ci_hi": 0.1141
+        },
+        "matched": {
+          "mean_t": 0.9181,
+          "mean_c": 0.9095,
+          "diff": 0.0086,
+          "ci_lo": -0.0422,
+          "ci_hi": 0.0594
+        }
+      },
+      "target_sales": {
+        "raw": {
+          "mean_t": 138.9436,
+          "mean_c": 91.4425,
+          "diff": 47.5011,
+          "ci_lo": 31.8974,
+          "ci_hi": 63.1048
+        },
+        "matched": {
+          "mean_t": 110.4743,
+          "mean_c": 110.4638,
+          "diff": 0.0105,
+          "ci_lo": -19.6662,
+          "ci_hi": 19.6872
+        }
+      },
+      "target_quantity": {
+        "raw": {
+          "mean_t": 55.9569,
+          "mean_c": 36.4448,
+          "diff": 19.5121,
+          "ci_lo": 13.5279,
+          "ci_hi": 25.4962
+        },
+        "matched": {
+          "mean_t": 43.3707,
+          "mean_c": 44.2759,
+          "diff": -0.9052,
+          "ci_lo": -7.9474,
+          "ci_hi": 6.1371
+        }
+      }
+    },
+    "secondary": {
+      "any_purchase": {
+        "raw": {
+          "mean_t": 0.951,
+          "mean_c": 0.9075,
+          "diff": 0.0435,
+          "ci_lo": 0.0072,
+          "ci_hi": 0.0798
+        },
+        "matched": {
+          "mean_t": 0.9353,
+          "mean_c": 0.944,
+          "diff": -0.0086,
+          "ci_lo": -0.0501,
+          "ci_hi": 0.0328
+        }
+      },
+      "total_sales": {
+        "raw": {
+          "mean_t": 298.5151,
+          "mean_c": 191.6036,
+          "diff": 106.9115,
+          "ci_lo": 74.6656,
+          "ci_hi": 139.1573
+        },
+        "matched": {
+          "mean_t": 232.0957,
+          "mean_c": 230.6245,
+          "diff": 1.4712,
+          "ci_lo": -37.2097,
+          "ci_hi": 40.152
+        }
+      },
+      "baskets": {
+        "raw": {
+          "mean_t": 11.1451,
+          "mean_c": 7.1731,
+          "diff": 3.972,
+          "ci_lo": 2.7856,
+          "ci_hi": 5.1583
+        },
+        "matched": {
+          "mean_t": 8.4397,
+          "mean_c": 8.6983,
+          "diff": -0.2586,
+          "ci_lo": -1.3827,
+          "ci_hi": 0.8654
+        }
+      }
+    }
+  }
+}
